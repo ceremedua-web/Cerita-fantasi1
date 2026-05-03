@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lord of Summons - Feedback</title>
+    <style>
+        /* Semua CSS kamu di sini */
+        body {
+            background-color: #000; /* Tambahkan ini agar background luar tidak putih */
+            color: white;
+            font-family: sans-serif;
+        }
+
+        .feedback-section {
+            background-color: #1a1a1a;
+            border-top: 3px solid orange;
+            padding: 20px;
+            margin: 50px auto; /* Tambah auto agar ke tengah */
+            border-radius: 10px;
+            max-width: 500px; /* Batasi lebar agar rapi di HP */
+        } 
+
+        .feedback-section h3 {
+            color: orange;
+            margin-top: 0;
+        } 
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        } 
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        } 
+
+        button {
+            background-color: orange;
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        } 
+
+        button:hover {
+            background-color: #cc7a00;
+        }
+    </style> </head>
+<body>
+
+<div class="feedback-section">
+    <h3>Saran & Kritik untuk Penulis</h3>
+    <p>Bantu Jaka berkembang dengan memberikan masukanmu!</p> 
+
+    <label for="saran-box">Pesan:</label>
+    <textarea id="saran-box" rows="5" placeholder="Tulis kritik atau saran di sini..."></textarea> 
+
+    <button type="button" onclick="alert('Terima kasih! Pesan kamu sudah tersimpan (simulasi).')">
+        Kirim Masukan
+    </button>
+</div>
+<a href="cerita1.html"><span style=" color:yellow;">← Kembali ke Cerita</span></a>
+
+</body>
+</html>
