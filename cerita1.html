@@ -1,0 +1,543 @@
+ <!doctype html>
+ <html lang="id">
+   <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=service-width,initial-scale=1.0">
+     <title>lord of summon</title>
+     <style>
+     .img-responsif {
+    width: 100%;      /* Gambar dipaksa selebar layar */
+    max-width: 600px; /* (Opsional) Biar kalau dibuka di laptop gak kegedean */
+    height: auto;
+    border-radius: 10px; /* Biar ujungnya tumpul kayak UI modern */
+}
+       #konten-cerita {
+         display:none;
+       }
+  .system-window {
+    background-color: rgba(0, 20, 40, 0.9); /* Biru gelap transparan */
+    border: 2px solid #00f2ff; /* Warna biru neon */
+    border-radius: 8px;
+    padding: 10px;
+    color: #00f2ff;
+    font-family: 'Courier New', Courier, monospace; /* Font sistem */
+    text-shadow: 0 0 5px #00f2ff;
+    margin: 15px 0;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+  }
+
+  .label-status {
+    font-weight: bold;
+     /* Warna merah buat HP biar kontras */
+  }
+
+  .value-status {
+    color: #00ff95; /* Warna hijau buat angkanya */
+  }
+  .value-status1{
+    color: #FFA500;
+  }
+  .value-status2{
+    color:#FF4500;
+  }
+  .catatan-sistem {
+  color: #a0a0a0; /* Warna abu-abu biar beda sama teks utama */
+  font-style: italic; /* Tulisan miring biar kesan narasi sistem dapet */
+  border-left: 3px solid #ffcc00; /* Garis kuning tipis di kiri biar estetik */
+  padding-left: 10px;
+  margin: 10px 20px;
+  font-size: 0.9em; /* Ukuran sedikit lebih kecil biar rapi */
+}
+.profil-karakter {
+    background: rgba(255, 255, 255, 0.05); /* Efek transparan tipis */
+    border-left: 5px solid #00ff95; /* Garis hijau di kiri sebagai penanda 'Protagonis' */
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 0 10px 10px 0;
+    line-height: 1.6;
+    color: #87CEEB;
+    position: relative;
+    overflow: hidden;
+}
+
+.profil-karakter::before {
+    content: "CHARACTER INFO";
+    display: block;
+    font-size: 0.7em;
+    font-weight: bold;
+    color: #00ff95;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+.daftar-xenon {
+    display: block; /* Biar dia bikin baris baru sendiri */
+    background: rgba(0, 150, 255, 0.1); /* Background biru transparan */
+    border: 1px solid #00d4ff; /* Garis pinggir biru terang */
+    border-radius: 8px;
+    padding: 12px;
+    margin: 15px 0;
+    font-family: 'Courier New', Courier, monospace; /* Font mesin/sistem */
+    color: #00d4ff;
+    position: relative;
+}
+
+/* Judul otomatis buat daftar xenon */
+.daftar-xenon::before {
+    content: " [ XENON LIST ] ";
+    display: block;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #00d4ff;
+}
+
+.xenon-item {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+
+.status-block { color: #ff4d4d; font-weight: bold; } /* Merah buat yang mati */
+.status-on { color: #00ff95; font-weight: bold; }    /* Hijau buat yang siap */
+.bronze{
+  color:#CD7F32;
+}
+    #input-nama {
+        background: rgba(0, 50, 50, 0.5);
+        border: 1px solid cyan;
+        color: white;
+        padding: 12px;
+        width: 100%;
+        box-sizing: border-box; /* Biar gak meleber */
+        margin-bottom: 15px;
+        font-family: 'Courier New', monospace;
+        outline: none;
+        text-align: center;
+    }
+
+    #input-nama:focus {
+        box-shadow: 0 0 10px cyan;
+    }
+
+    button {
+        width: 100%;
+        background: cyan;
+        color: black;
+        border: none;
+        padding: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: 'Courier New', monospace;
+    }
+
+    button:hover {
+        background: white;
+        box-shadow: 0 0 15px white;
+    }
+    /* Container utama status */
+.status-container {
+    position: -webkit-sticky; /* Buat Safari */
+    position: sticky;
+    top: 0; /* Nempel di paling atas layar */
+    background: #222; /* Warna background biar gak transparan pas lewat di atas teks */
+    padding: 10px;
+    border-bottom: 2px solid #ffd700; /* Garis emas biar keren */
+    display: flex;
+    justify-content: space-around; /* Biar atributnya rapi berjejer horizontal */
+    z-index: 999; /* Biar dia selalu di atas teks cerita */
+}
+
+.stat-item {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: #fff;
+}
+
+.stat-value {
+    color: #00ff00; /* Warna hijau biar kayak sistem game */
+}
+/* Layar hasil yang awalnya sembunyi */
+/* Layar hasil yang bisa di-scroll */
+#result-screen {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; 
+    height: 100%; /* Tetap penuhi layar */
+    background: #1a1a1a;
+    color: white;
+    padding: 20px;
+    z-index: 1000; /* Pastikan paling depan */
+    
+    /* INI KUNCINYA */
+    overflow-y: auto;       /* Biar bisa digeser kalau teks kepanjangan */
+    box-sizing: border-box; /* Biar padding gak nambah lebar layar */
+}
+
+
+/* Biar rapi */
+.hidden { display: none !important; }
+/* Pembatas antar tombol pilihan */
+#choice-container button {
+    margin-bottom: 10px; /* Jarak bawah antar tombol */
+}
+
+/* Garis pembatas estetik sebelum pilihan */
+.pembatas-pilihan {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 255, 255, 0), rgba(0, 255, 255, 0.75), rgba(0, 255, 255, 0));
+    margin: 20px 0;
+}
+     </style>
+   </head>
+   <body>
+     <div class="system-ui">
+    <h2>[ REGISTRASI HUNTER ]</h2>
+    <p>Selamat datang di sistem Lord of Summons. Masukkan identitas Anda untuk sinkronisasi jiwa:</p>
+    
+    <input type="text" id="input-nama" placeholder="Masukkan Nama Anda..." autocomplete="off">
+    
+    <button onclick="simpanNama()">SINKRONISASI</button>
+    
+    <p id="notif-sistem" style="font-size: 0.8em; color: gray; margin-top: 10px;"></p>
+</div>
+
+     <h1>PERKENALAN PART 1</h1>
+<button type="button" onclick="toggleCerita()">SEJARAH CERITA</button>
+    <div id="konten-cerita">
+     <h3>AWAL MULA</h3>
+     <P>Dunia tidak lagi sama sejak cakrawala terbelah. Langit yang dulunya kosong kini dipenuhi lubang-lubang dimensi yang disebut **Gate**, memuntahkan mimpi buruk yang seharusnya hanya ada dalam catatan sejarah dan mitos kuno. Dari dalam celah itu, monster mitologi yang agung, binatang purba yang lapar, hingga sosok-sosok mengerikan dengan bentuk tubuh campuran yang menentang logika biologi, tumpah ruah ke bumi. </p>
+     <h3>PENEMUAN BARU</h3>
+     <p>Namun, di tengah keputusasaan, manusia membuktikan bahwa kecerdasan adalah senjata terbaik mereka. Para ilmuwan berhasil memadukan teknologi dengan esensi misterius dari Gate, melahirkan persenjataan, pakaian, hingga perhiasan yang diberkati kemampuan sihir dan efek *buff* permanen. Sebuah penemuan besar kemudian mengubah sudut pandang dunia: monster-monster ini ternyata bersifat netral. Mereka hanya akan menyerang jika merasa terancam—sebuah teori yang terbukti benar dan menghentikan pembantaian tanpa henti. Titik balik sesungguhnya terjadi ketika ilmuwan menciptakan sebuah perangkat revolusioner yang menyerupai ponsel pintar, namun memiliki sistem yang jauh melampaui imajinasi: **CIPHER**. Alat ini bukan sekadar alat komunikasi. Fungsi utamanya adalah merekrut monster-monster tersebut untuk menjadi rekan bertarung yang setia, sebuah proses yang dikenal sebagai **SUMMON**. Mereka yang memegang Cipher kini dikenal dengan sebutan **HUNTER**. Seketika, rutinitas membosankan—makan, tidur, kerja—runtuh, digantikan oleh gairah petualangan, perekrutan makhluk yang kini disebut **Xenon**, dan persaingan antar Hunter dalam duel-duel besar.
+     </p>
+     <h3>RUTINITAS MANUSIA BERUBAH TOTAL</h3>
+     <p>Tahun demi tahun berlalu, teknologi Cipher pun berevolusi ke tingkat yang lebih canggih. Cipher versi terbaru kini mampu mendeteksi potensi penuh pemiliknya dalam bentuk **Status Atribut**, daftar **Skill**, hingga analisis perlengkapan yang digunakan. Hidup kini layaknya sebuah permainan nyata; para Hunter memiliki **Level** yang akan meningkat setiap kali mereka menumbangkan Xenon liar atau mengonsumsi sumber daya tertentu. Pasar kini dipenuhi dengan berbagai item canggih, mulai dari ramuan penyembuh hingga *potion* tipe *buff* dan *debuff* yang dijual bebas. Merekrut Xenon telah menjadi detak jantung kehidupan sehari-hari. Namun, ada satu fitur yang paling dinantikan: setiap kali seorang Hunter naik 10 level, sistem Cipher akan memberikan akses khusus untuk melakukan **Gacha Xenon**. Sebuah momen pertaruhan keberuntungan untuk mendapatkan rekan langka yang muncul secara acak dari sistem. Ini adalah metode kedua dari tiga cara untuk mendapatkan Xenon, dan bagi banyak orang, inilah awal dari takdir mereka yang sesungguhnya. Selamat datang di era baru, di mana petualangan bukan lagi pilihan, melainkan cara untuk bertahan hidup.</p> <hr>
+     <hr>
+     </div>
+     <div class="status-container">
+    <div class="stat-item">
+        status: <span id="stat-status" class="stat-value">direndahkan 20%</span>
+    </div>
+    <div class="stat-item">
+        kecerdasan: <span id="stat-kecerdasan" class="stat-value">0</span>
+    </div>
+</div>
+
+<div class="catatan-sistem">jika ingin kronologi cerita awal mula,pencet tombol sejarah cerita di atas status </div>
+     <h2>AKADEMI NUODING</h2>
+     <h3>ARENA PERTANDINGAN</h3>
+     <p><strong>DUAK!</strong></p>
+<p>Udara seakan dipaksa keluar dari paru-paru. Dunia terasa berputar, gravitasi seolah menghilang saat tubuh dirimu melayang di udara, terlempar akibat hantaman telak yang menghujam dada lu. Di tengah pandangan lu yang kabur, lu melihat debu-debu arena beterbangan di sekelilingnya.
+​Beberapa meter di hadapan lu, berdiri sosok lawan lu yang sekelas dengan lu, <strong>Rudi</strong></p>
+
+​<p>Di samping Rudi, seekor makhluk berdiri
+dengan wajah mengerikan
+Itu adalah Xenon milik Rudi, seekor monster setinggi anjing remaja namun dengan estetika yang mengerikan. Tubuhnya tersusun dari bongkahan batu dan tanah yang keras, menyerupai Golem mini yang memancarkan aura elemen tanah yang pekat.</p>
+​<p>Rudi menyeringai lebar, melipat tangan di dada.
+<i><strong>Rudi</strong></i>:"Ayolah <span id="nama-pembaca">jinzhu</span>, segitu aja kah kemampuan lu? Hahaha!" ejeknya, suaranya menggema di seluruh arena.</p>
+<div class="profil-karakter"><span class="nama-player-display">jinzhu</span> adalah murid yang di anggap lemah
+karena cipher yang di pakai adalah versi lama yang tidak memiliki fitur fitur baru.<p>untuk mendapatkan cipher versi baru,harus di upgrade di gudang asosiasi hunter,tapi biaya upgrade nya sangat mahal.</p>karena itulah ia masi memakai cipher pemberian nenek nya karena dirinya adalah orang dengan keluarga tanpa ayah dan ibu .cipher versi lama membuat rekrutan xenon nya juga terbatas
+begitu juga dengan kemampuan nya yang hanya bisa merekrut xenon dengan level 3-4</div>
+​<p>Sambil meringis menahan sakit ,lu berusaha bangkit. Napas lu terengah-engah, dada lu naik-turun dengan cepat. Tangan lu gemetar, namun jemari lu masih mencengkeram erat perangkat Cipher milik lu.</p>
+​<p>Seketika, layar hologram otomatis muncul di depan mata masing-masing keduanya, menampilkan status mereka.</p>
+<div class="system-window">
+  <strong>[ STATUS LAWAN: RUDI] </strong><br>
+  <span class="label-status">HP:</span> <span class="value-status">100/100</span><br>
+  <span class="label-status">MP:</span> <span class="value-status">30/60</span>
+</div>
+<div class="system-window">
+​<strong>[Status Diri: <span class="nama-player-display">Jinzhu</span>]</strong><Br>
+<span class="label-status">HP:</span>
+<span class="value-status1">60/100</span><br>
+<span class="label-status">MP:</span>
+<span class="value-status2">10/20</span></div>
+<div class="catatan-sistem">​(Catatan: para hunter tidak bisa melihat status atribut dan daftar xenon lawan. Rincian atribut rahasia dan daftar Xenon cadangan mereka tetap menjadi misteri yang tersembunyi di balik sistem.)</div>
+​<p>
+  lu melirik cepat ke arah layar Cipher lu sendiri. Daftar Xenon milik lu muncul dengan peringatan yang tidak menguntungkan:
+  
+  <span class="daftar-xenon">
+    <span class="xenon-item">
+        <strong>Ric</strong> (Rank: <plank class="bronze">Bronze</plank> | Lv. 2)<br>
+        Elemen: Air (Slime Ikan Berkaki)<br>
+        Status: <span class="status-block">[BLOCK]</span> — (Energi habis)
+    </span>
+    <span class="xenon-item">
+        <strong>Fitsera</strong> (Rank: <plank class="bronze">Bronze</plank> | Lv. 3)<br>
+        Elemen: Rumput (Serigala Daun Kecil)<br>
+        Status: <span class="status-on">[ON]</span> — (Siap di-Summon)
+    </span>
+  </span>
+
+  lu mengusap darah di sudut bibir. Hanya tersisa satu pilihan di tangan lu. Ric sudah tumbang,yang tersisa hanyalah fitsera,monster xenon terkuat lu saat ini.
+</p>
+tanpa menunggu lama lagi,Rudi kembali memerintahkan Xenon Golem-nya untuk merangsek maju. Getaran langkah kaki monster tanah itu membuat lantai arena ikut bergetar. <p>lu menatap layar Cipher yang retak.<br>
+​<i><strong>rudi</strong></i>:"Gak ada gunanya  nahan-nahan lagi,<span class="nama-player-display">Jinzhu!</span>" teriak Rudi sombong.<br>
+<i><strong>rudi</strong></i>: "Keluarin serigala rumput kecil lu itu, atau mau gue bikin pingsan sekalian?"</p>
+<p>lu terdiam. Otak lu berputar cepat. Di satu sisi, harga diri lu sebagai Hunter dipertaruhkan di depan teman-teman sekelas . Di sisi lain, perbedaan statistik dan kondisi Xenon saat ini benar-benar tidak menguntungkan.</p>
+
+<hr>
+
+<div id="story-text">
+    <p>Musuh menghadang di depan! Apa yang akan kamu lakukan?</p>
+</div>
+
+<hr class="pembatas-pilihan"> <div id="choice-container">
+    <button onclick="pilih('bertarung')">Terus Bertarung</button>
+    <div style="height: 5px;"></div> <button onclick="pilih('menyerah')" style="background: #ff4500; color: white;">Menyerah</button>
+</div>
+
+
+<div id="next-story" class="hidden">
+    <h4>pertandingan selesai...</h4>
+    <p> lu berjalan keluar dari arena dengan langkah berat menuju gedung utama Akademi lu</p>
+    <br>
+    <br>
+    <h3>di koridor</h3>
+    <p>Baru saja memasuki koridor, langkah lu terhenti. Di sana, Rudi sedang berdiri bersandar di dinding dengan tangan terlipat, tampak menunggu kedatangan lu dengan raut wajah yang tidak bisa di prediksi</p>
+    <div id="dialog-rudi">
+    </div> 
+    <div id="cerita-lanjutan">
+      <p>setelah itu lu pergi meninggalkan rudi yang masi berada di belakang lu</p>
+      <p>sambil terus bejalan menelusuri koridor,lu sambil menatap atribut papan sistem lu yang baru ada kecerdasan dan statushunter</p>
+      <div class="catatan-sistem">catatan:lu harus mendapatkan atribut lain nya dengan kondisi tertentu karena cipher lu yang masi versi lama,sedangkan hunter lain dengan cipher versi terbaru sudah mendapatkan atribut lengkap </div>
+   <p>karena terfokus menatap papan layar atribut,Pikiran yang kalut membuat lu berjalan tanpa memperhatikan arah. Di tikungan koridor menuju kelas, lu gak sengaja menabrak seseorang yang berjalan dari arah berlawanan.</p>
+   <h4>BRUK!</h4>
+   <p>lu hampir terjatuh, tapi lu segera menyeimbangkan diri.</p>
+   <p>lu mendongak dan seketika terdiam. Di hadapan lu berdiri <strong>Rina</strong>, salah satu dari tiga siswi tercantik sekaligus salah satu Hunter terkuat di Akademi. Rambutnya yang panjang dan pirang dengan matanya yang tenang selalu memberikan kesan lembut dan baik hati kepada siapa pun, sangat kontras dengan dua cewek kuat lainnya yang terkenal dingin dan keras.</p>
+   <img src="Rina.png" class="img-responsif">
+   <div class="catatan-sistem">ooc:hiraukan logo dreaming nya bang:)
+   ini gambaran dari wujud karakter rina ya gaes ya</div>
+     <p><i><strong>Rina</strong></i>:"Aduh, maaf ya... aku kurang hati-hati,"<br>
+     ucap nya dengan nada suaranya yang halus.<br> Ia menatap Jinzhu dengan rasa khawatir saat melihat luka di bibir Jinzhu akibat pertandingan tadi.</p>
+     <p><i><strong>Rina</strong></i>: "Lu gapapa?"</p>
+     
+     <div id="pilihan-dialog-rina">
+         <button onclick="balasRina('ramah')">"Iya gw gapapa kok."</button>
+         <div style="height: 5px;"></div>
+         <button onclick="balasRina('dingin')" style="background: #ff4500; color: white;">"Ya,gapapa."</button>
+     </div>
+
+     <div id="balasan-rina" class="hidden"></div>
+     
+     <br> 
+     <br>
+<p>Setelah pertemuan singkat dengan Rina, lu menyadari bahwa lu tidak bisa berdiam diri saja. lu harus segera memulihkan posisi lu sendiri.</p>
+<p>Pilih tempat yang ingin lu kunjungi untuk meningkatkan status lu kedepan nya:</p>
+
+<div id="choice-lokasi">
+    <button onclick="pindahLokasi('hutan')">Pergi ke Hutan (Latihan Fisik)</button>
+    <div style="height: 10px;"></div>
+    <button onclick="pindahLokasi('perpustakaan')" style="background: #4a90e2; color: white;">Pergi ke Perpustakaan Akademi (Belajar)</button>
+</div>
+
+     
+   </div>
+</div>
+
+<div id="result-screen">
+    <h2 id="result-title"></h2>
+    <p id="result-desc"></p>
+    <button onclick="kembaliKeCerita()">Kembali ke Cerita Utama</button>
+</div>
+
+   <script>
+     function toggleCerita() {
+  var x = document.getElementById("konten-cerita");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+   </script>
+   <div style="text-align: center; margin-top: 30px;">
+    <a href="saran.html" style="text-decoration: none;">
+        <button type="button" style="background-color: orange; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            KASIH SARAN
+        </button>
+    </a>
+</div>
+<script>
+    // --- FUNGSI 1: CEK NAMA SAAT HALAMAN DIBUKA ---
+    const namaTersimpan = localStorage.getItem('namaHunter');
+    if (namaTersimpan) {
+        // Kita cari SEMUA elemen yang punya class 'nama-player-display' dan id 'nama-pembaca'
+        // Lalu kita ganti teksnya jadi nama yang disimpan
+        
+        // Ganti yang di dialog Rudi
+        if(document.getElementById('nama-pembaca')) {
+            document.getElementById('nama-pembaca').innerText = namaTersimpan;
+        }
+
+        // Ganti semua tempat lain (Status & Profil)
+        const semuaNama = document.querySelectorAll('.nama-player-display');
+        semuaNama.forEach(el => {
+            el.innerText = namaTersimpan;
+        });
+        
+        document.querySelector('.system-ui').style.display = "none";
+    }
+
+    // --- FUNGSI 2: SIMPAN NAMA (TOMBOL SINKRONISASI) ---
+    function simpanNama() {
+        const nama = document.getElementById('input-nama').value;
+        const notif = document.getElementById('notif-sistem');
+
+        if (nama.trim() === "") {
+            notif.innerHTML = "SYSTEM ERROR: Nama tidak boleh kosong!";
+            notif.style.color = "red";
+        } else {
+            // Simpan nama ke memori HP
+            localStorage.setItem('namaHunter', nama);
+            
+            notif.innerHTML = "SINKRONISASI BERHASIL. Salam, Hunter " + nama + ".";
+            notif.style.color = "cyan";
+
+            // Refresh halaman setelah 1 detik biar namanya langsung berubah di cerita
+            setTimeout(() => {
+                location.reload(); 
+            }, 1000);
+        }
+    }
+
+    // --- FUNGSI 3: TOMBOL SEJARAH ---
+    function toggleCerita() {
+        var x = document.getElementById("konten-cerita");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+    // --- LOGIKA GAME & STATUS ---
+ let statusHunter = "direndahkan 20%";
+let kecerdasan= 0;
+let pilihanTerakhir="";
+
+function pilih(opsi) {
+  pilihanTerakhir = opsi;
+    const screen = document.getElementById('result-screen');
+    const title = document.getElementById('result-title');
+    const desc = document.getElementById('result-desc');
+    const nama = localStorage.getItem('namaHunter') || "Jinzhu";
+
+    if (opsi === 'bertarung') {
+        status += "direndahkan 80%"; // Kecepatan nambah
+        document.getElementById('stat-status').innerText = status;
+        
+        title.innerText = "HASIL: KEKALAHAN YANG MEMALUKAN";
+        desc.innerHTML = `LU MEMILIH UNTUK LANJUT BERTARUNG,DENGAN XENON TERAKHIR LU,LU YAKIN MASI ADA KESEMPATAN UNTUK MENANG,TAPI SAYANG,KEKUATAN XENON LAWAN LEBIH UNGGUL,YANG MEMBUAT LU KALAH TOTAL DAN MENANGGUNG EJEKAN ORANG ORANG<br><br><b>status</b>:direndahkan 60+`;
+    } else {
+        kecerdasan += 10; // Kekuatan nambah
+        document.getElementById('stat-kecerdasan').innerText = kecerdasan;
+        
+        title.innerText = "HASIL: ANALISIS SITUASI";
+        desc.innerHTML = `Lu memilih mundur karena tau gak akan menang. Rudi mengejek lu tapi lu menghiraukan nya, . <br><br> <b>EFEK:</b> kecerdasan bertambah +10 karena fokus keselamatan xenon!`;
+    }
+
+    // Pindahin pembaca ke layar hasil (nutupin layar lama)
+    screen.style.display = 'block';
+    updateDialogRudi() ;
+}
+
+function kembaliKeCerita() {
+    // Sembunyikan layar hasil
+    document.getElementById('result-screen').style.display = 'none';
+    
+    // Hilangkan tombol pilihan biar gak bisa klik dua kali (Cheat)
+    document.getElementById('choice-container').classList.add('hidden');
+    document.getElementById('story-text').innerHTML = "<i>Keputusan telah diambil....</i>";
+    
+    // Munculkan kelanjutan cerita utama
+    document.getElementById('next-story').classList.remove('hidden');
+    
+    // Scroll otomatis ke teks baru biar pembaca gak bingung
+    document.getElementById('next-story').scrollIntoView({ behavior: 'smooth' });
+}
+function updateDialogRudi() {
+    const dialogBox = document.getElementById('dialog-rudi');
+    const namaTersimpan = localStorage.getItem('namaHunter') || "Jinzhu"; // Ambil nama terbaru
+
+    if (pilihanTerakhir === 'bertarung') {
+        dialogBox.innerHTML = `<i><strong>Rudi</strong></i>: "Masih bisa jalan? Gue kira mental lu udah hancur bareng Xenon lemah lu itu. Lain kali kalau gak punya level, mending sembunyi di kamar aja daripada mempermalukan diri sendiri!" <br>
+        <i><strong><span class="nama-player-display">${namaTersimpan}</span></strong></i>: "cih."`;
+    } else {
+        dialogBox.innerHTML = `<i><strong>Rudi</strong></i>: "Pilihan yang berani tadi. Lu tahu kapan harus tarik mundur sebelum Xenon lu luka parah. Meskipun lu kalah, setidaknya lu lebih cerdik dari yang gue kira." <br>
+        <i><strong><span class="nama-player-display">${namaTersimpan}</span></strong></i>: "terima kasih"`;
+    }
+}
+function balasRina(pilihan) {
+    const pilihanDiv = document.getElementById('pilihan-dialog-rina');
+    const balasanDiv = document.getElementById('balasan-rina');
+    const nama = localStorage.getItem('namaHunter') || "Jinzhu";
+    let poinRina = 20; // Poin awal
+
+    if (pilihan === 'ramah') {
+        poinRina = 40;
+        localStorage.setItem('hubunganRina', 40); // DISIMPAN KE HP
+        balasanDiv.innerHTML = `
+            <p><i><strong>${nama}</strong></i>: "Iya gw gapapa kok."</p>
+            <p>Rina tersenyum lega... <br>
+            Rina mulai membuka tas nya dan mengambil sebuah plester kecil
+            <br>
+            <i>Rina</i>:"ni buat lu,semoga cepat sembuh ya,dan tetap semangat okee"
+            <br>
+            <i>Lu:"makasih ya"
+            <br>
+            rina pun mulai beranjak pergi dengan santai meninggalkan lu sendiri di koridor
+            </p>
+            <div class="catatan-sistem">Hubungan Rina: 40/50 (asing)</div>
+        `;
+    } else {
+        poinRina = 0;
+        localStorage.setItem('hubunganRina', 0); // DISIMPAN KE HP
+        balasanDiv.innerHTML = `
+            <p><i><strong>${nama}</strong></i>: "Ya, gapapa."</p>
+            <p>Rina terdiam sejenak <br>
+            <i>Rina</i>:"ooh yaudah,maaf ya udah mengganggu"<br>
+            Rina pun mulai berjalan melewati lu tanpa sebongka kata apapun</p>
+            <div class="catatan-sistem">Hubungan Rina: 0/50 (Asing)</div>
+        `;
+    }
+    pilihanDiv.classList.add('hidden');
+    balasanDiv.classList.remove('hidden');
+}
+function pindahLokasi(lokasi) {
+    const screen = document.getElementById('result-screen');
+    const title = document.getElementById('result-title');
+    const desc = document.getElementById('result-desc');
+
+    // 1. Kuncinya di sini: Kita "ambil" tombolnya dulu
+    const tombolLanjut = screen.querySelector('button'); 
+
+    localStorage.setItem('lokasiTerakhir', lokasi);
+
+    if (lokasi === 'hutan') {
+        title.innerText = "LOKASI: HUTAN BELANTARA";
+        desc.innerHTML = `Jinzhu berniat untuk melakukan grinding kecil-kecilan.<br> Namun, saat sedang mengejar seekor Xenon liar yang lincah, Xenon tersebut tiba-tiba lari ketakutan ke arah area terdalam hutan yang tertutup kabut tebal.<br> Jinzhu yang penasaran terus mengejarnya hingga ia menyadari sinyal Cipher miliknya mendadak mati total (Dead Zone).<br> Di tengah kegelapan itu, sebuah cahaya biru terang muncul dari balik semak-semak tua. <br><br> <b>EFEK:</b> Potensi fisik meningkat!`;
+    } else if (lokasi === 'perpustakaan') {
+        title.innerText = "LOKASI: PERPUSTAKAAN AKADEMI";
+        desc.innerHTML = `Saat sedang asyik membedah buku manual kuno, Jinzhu menemukan sebuah catatan kaki misterius yang ditulis dengan tinta yang hanya bisa dilihat di bawah sinar bulan. <br>Catatan itu berbunyi: "Sesuatu yang jatuh dari langit masa depan, tertidur di koordinat X." <br>Rasa ingin tahunya meledak. Dengan panduan peta darurat dari buku tersebut, Jinzhu menyelinap keluar Akademi dan menuju titik koordinat di tengah hutan.<br> Di sana, ia menemukan sebuah kawah kecil yang memancarkan energi aneh.<br><br> <b>EFEK:</b> Kecerdasan +5!`;
+    }
+
+    // 2. Sekarang kita ubah tombol yang sudah kita "ambil" tadi
+    tombolLanjut.innerText = "LANJUT KE BAB 2"; 
+    tombolLanjut.setAttribute("onclick", "keBab2()"); 
+    tombolLanjut.style.background = "#00ff95"; 
+
+    screen.style.display = 'block';
+}
+
+// 3. Tambahkan fungsi pindah halaman ini di bawahnya
+function keBab2() {
+    window.location.href = "bab2.html"; 
+}
+
+
+</script>
+   </body>
+ </html>
